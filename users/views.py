@@ -4,15 +4,19 @@ import google_auth_oauthlib.flow
 import os
 from oauth2client.client import OAuth2WebServerFlow
 from django.conf import settings
+from googleapiclient.discovery import build
 
 # Create your views here.
 SCOPES = ['https://www.googleapis.com/auth/fitness.body.read']
+API_SERVICE_NAME = 'fitness'
+API_VERSION = 'v1'
+
 def authenticate(request):
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     os.path.abspath('E:/research/heartRate/users/client_secret.json'),
     ['https://www.googleapis.com/auth/fitness.body.read'])
     
-    flow.redirect_uri = 'http://localhost:8000/redirect'
+    flow.redirect_uri = 'http://localhost:8000/redirect/'
 
     authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
     request.session['STATE'] = state
@@ -23,17 +27,23 @@ def redirectView(request):
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     os.path.abspath('E:/research/heartRate/users/client_secret.json'), scopes=SCOPES, state=state)
-    flow.redirect_uri = 'http://localhost:8000/home'
-
-    authorization_response = request.build_absolute_uri()
+    flow.redirect_uri = 'http://localhost:8000/redirect/'
+    authorization_response = request.get_full_path() #build_absolute_uri()
     flow.fetch_token(authorization_response = authorization_response)
-    
-    credentials = flow.CredentialsModel
+    credentials = flow.credentials
     request.session['credentials'] = credentials_to_dict(credentials)
+    return redirect('home-view')
 
-    return redirect('home-view') 
-
-def home(request): 
+def home(request):
+    if 'credentials' not in request.session:
+        return redirect('auth-view') 
+    credentials = google.oauth2.credentials.Credentials(
+        **request.session['credentials']
+    )
+    service = build(
+        API_SERVICE_NAME, API_VERSION, credentials=credentials
+    )
+    request.session['credentials'] = credentials_to_dict(credentials)
     return render(request, 'users/index.html') 
 
 def credentials_to_dict(credentials):
