@@ -10,7 +10,8 @@ import json
 SCOPES = ['https://www.googleapis.com/auth/fitness.body.read']
 API_SERVICE_NAME = 'fitness'
 API_VERSION = 'v1'
-DATA_SET = "1051700038292387000-1451700038292387000"
+DATA_SET = "3051700038292387000-1451700038292387000"
+LIMIT = 50
 
 def authenticate(request):
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -46,7 +47,7 @@ def home(request):
     )
     result = service.users().dataSources(). \
         datasets(). \
-        get(userId='me', dataSourceId='derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm', datasetId=DATA_SET). \
+        get(userId='me', dataSourceId='derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm', datasetId=DATA_SET, limit = LIMIT). \
         execute()
     
     request.session['credentials'] = credentials_to_dict(credentials)
