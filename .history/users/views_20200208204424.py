@@ -65,7 +65,7 @@ class ChartData(APIView):
         print(json.dumps(result, indent=4, sort_keys=True))
         defaultData = []
         label = []
-        average = []
+        average = return_average(defaultData)
         #Getting points
         for pt in result['point']:
             print(pt)
@@ -75,10 +75,9 @@ class ChartData(APIView):
         for i in range(LIMIT):
             label.append(i)
 
-        average = return_average(defaultData)
         data = {
             'context': defaultData,
-            'label': label,
+            'label': label
             'average': average
         }
         #print(json.dumps(context, indent=4, sort_keys=True))
@@ -104,10 +103,8 @@ def return_average(data):
 
     for point in data:
         sum += int(point)
-
     sum = sum/len(data)
-
     for i in range(LIMIT):
         average.append(sum)
-    print(average)
+
     return average

@@ -1,0 +1,87 @@
+{% load static %} 
+<!DOCTYPE html> 
+<html lang="en"> 
+  
+<head> 
+    <meta charset="UTF-8"> 
+    <script src="{% static 'js/main.js' %}"></script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/bower.json"></script>
+    <script src="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <title>Google Login</title> 
+    <script>
+        var endpoint = 'api/chart/data'
+        var defaultData = []
+        
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+                defaultData = data.context
+                renderChart(data)
+                console.log(data)
+            },
+            error: function(error_data){
+                console.log("Error")
+                console.log(error_data)
+            }
+        })
+
+        function renderChart(data){
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var defaultData = data.context
+            var label = data.label
+            console.log(defaultData)
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: label,
+                    datasets: [{
+                        label: '# of Votes',
+                        data: defaultData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    responsive: false
+                }
+            });
+        }
+    </script>
+</head> 
+<body> 
+
+<div> 
+    <canvas id="myChart" width="500" height="500"></canvas>
+    <!--{%for point in points%}
+        {{point.value.0.fpVal}}
+        </br>
+    {%endfor%}-->
+    <p>h</p>
+</div> 
+</body> 
+</html> 

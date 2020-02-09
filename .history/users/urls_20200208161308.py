@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.home, name ='home-view'),
     path('auth/', views.authenticate, name ='auth-view'),
     path('redirect/', views.redirectView, name ='redirect-view'),
-    path('api/chart/data/', ChartData.as_view(), name='data-view'),
+    path('api/chart/data/', ChartData.as_view(), name='home-view'),
 ]

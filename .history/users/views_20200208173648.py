@@ -62,24 +62,21 @@ class ChartData(APIView):
             execute()
         
         request.session['credentials'] = credentials_to_dict(credentials)
-        print(json.dumps(result, indent=4, sort_keys=True))
+        #print(json.dumps(result, indent=4, sort_keys=True))
         defaultData = []
         label = []
-        average = []
-        #Getting points
+
         for pt in result['point']:
             print(pt)
             defaultData.append(pt['value'][0]['fpVal'])
 
-        #Getting x-axis
         for i in range(LIMIT):
             label.append(i)
+        #print(json.dumps(defaultData, indent=4, sort_keys=True))
 
-        average = return_average(defaultData)
         data = {
             'context': defaultData,
-            'label': label,
-            'average': average
+            'label': label
         }
         #print(json.dumps(context, indent=4, sort_keys=True))
         return Response(data) 
@@ -96,18 +93,3 @@ def credentials_to_dict(credentials):
 
 def home(request):
     return render(request, 'users/index.html')
-
-#Getting average
-def return_average(data):
-    sum = 0
-    average = []
-
-    for point in data:
-        sum += int(point)
-
-    sum = sum/len(data)
-
-    for i in range(LIMIT):
-        average.append(sum)
-    print(average)
-    return average

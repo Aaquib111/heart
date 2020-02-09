@@ -18,7 +18,6 @@ SCOPES = ['https://www.googleapis.com/auth/fitness.body.read']
 API_SERVICE_NAME = 'fitness'
 API_VERSION = 'v1'
 DATA_SET = "3051700038292387000-1451700038292387000"
-LIMIT = 11
 
 def authenticate(request):
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -58,28 +57,20 @@ class ChartData(APIView):
         )
         result = service.users().dataSources(). \
             datasets(). \
-            get(userId='me', dataSourceId='derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm', datasetId=DATA_SET, limit = LIMIT). \
+            get(userId='me', dataSourceId='derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm', datasetId=DATA_SET, limit = 5). \
             execute()
         
         request.session['credentials'] = credentials_to_dict(credentials)
-        print(json.dumps(result, indent=4, sort_keys=True))
+        #print(json.dumps(result, indent=4, sort_keys=True))
         defaultData = []
-        label = []
-        average = []
-        #Getting points
-        for pt in result['point']:
-            print(pt)
-            defaultData.append(pt['value'][0]['fpVal'])
 
-        #Getting x-axis
-        for i in range(LIMIT):
-            label.append(i)
+        for point in result:
+            defaultData.append(point.value)
 
-        average = return_average(defaultData)
+        print(json.dumps(defaultData, indent=4, sort_keys=True))
+
         data = {
-            'context': defaultData,
-            'label': label,
-            'average': average
+            'context': defaultData
         }
         #print(json.dumps(context, indent=4, sort_keys=True))
         return Response(data) 
@@ -96,18 +87,3 @@ def credentials_to_dict(credentials):
 
 def home(request):
     return render(request, 'users/index.html')
-
-#Getting average
-def return_average(data):
-    sum = 0
-    average = []
-
-    for point in data:
-        sum += int(point)
-
-    sum = sum/len(data)
-
-    for i in range(LIMIT):
-        average.append(sum)
-    print(average)
-    return average

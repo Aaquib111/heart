@@ -1,11 +1,15 @@
-{%extends 'users/base.html'%} 
-{% load static %}
-
-{%block script%}
+{% load static %} 
+<!DOCTYPE html> 
+<html lang="en"> 
+  
+<head> 
+    <meta charset="UTF-8"> 
+    <script src="{% static 'js/main.js' %}"></script> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/bower.json"></script>
     <script src="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <title>Google Login</title> 
     <script>
         var endpoint = 'api/chart/data'
         var defaultData = []
@@ -27,7 +31,6 @@
         function renderChart(data){
             var ctx = document.getElementById('myChart').getContext('2d');
             var defaultData = data.context
-            var avgData = data.average
             var label = data.label
             console.log(defaultData)
             var myChart = new Chart(ctx, {
@@ -54,28 +57,7 @@
                             'rgba(255, 159, 64, 1)'
                         ],
                         borderWidth: 1
-                    },
-                    {
-                        label: 'Average heart rate',
-                        data: avgData,
-                        backgroundColor: [
-                            //'rgba(255, 99, 132, 0.2)',
-                            //'rgba(54, 162, 235, 0.2)',
-                            //'rgba(255, 206, 86, 0.2)',
-                            //'rgba(75, 192, 192, 0.2)',
-                            //'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 100, 50, 0.2)'
-                        ],
-                        borderColor: [
-                            //'rgba(255, 99, 132, 1)',
-                            //'rgba(54, 162, 235, 1)',
-                            //'rgba(255, 206, 86, 1)',
-                            //'rgba(75, 192, 192, 1)',
-                            //'rgba(153, 102, 255, 1)',
-                            'rgba(255, 100, 50, 1)'
-                        ],
-                        borderWidth: 1
-                    }],
+                    }]
                 },
                 options: {
                     scales: {
@@ -85,45 +67,20 @@
                             }
                         }]
                     },
-                    // tooltips: {
-                    //     mode: 'index',
-                    //     axis: 'y',
-                    //     intersect: false,
-                    // },
-                    // hover: {
-                    //     mode: 'nearest',
-                    //     intersect: true,
-                    // },
-                    // scales: {
-                    //     xAxes: [{
-                    //         display: true,
-                    //         scaleLabel: {
-                    //             display: true,
-                    //             labelString: 'Datapoints'
-                    //         }
-                    //     }],
-                    //     yAxes: [{
-                    //         display: true,
-                    //         scaleLabel: {
-                    //             display: true,
-                    //             labelString: 'BPM'
-                    //         }
-                    //     }],
-                    // },
-                    responsive: false,
-                    
+                    responsive: false
                 }
             });
         }
     </script>
-{%endblock script%}
+</head> 
+<body> 
 
-{%block content%}
-    <div> 
-        <canvas id="myChart" width="500" height="500"></canvas>
-        <!--{%for point in points%}
-            {{point.value.0.fpVal}}
-            </br>
-        {%endfor%}-->
-    </div>
-{%endblock content%}
+<div> 
+    <canvas id="myChart" width="500" height="500"></canvas>
+    <!--{%for point in points%}
+        {{point.value.0.fpVal}}
+        </br>
+    {%endfor%}-->
+</div> 
+</body> 
+</html> 
